@@ -7,7 +7,7 @@ import numpy as np
 
 #learning Parameter
 learning_rate = 0.01
-training_iters = 500 #500{small}#100000{big}
+training_iters = 10000 #500{small}#100000{big}
 batch_size = 50
 display_step = 200
 
@@ -94,7 +94,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 init = tf.initialize_all_variables()
 
 #train function
-def train_model(output='model/small/model_small.ckt'):
+def train_model(output='model/big/model_big.ckt'):
 
     with tf.Session() as session:
         session.run(init)
