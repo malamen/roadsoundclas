@@ -82,7 +82,9 @@ def RNN(x, weight, bias):
 
 prediction = RNN(x, weight, bias)
 
+#tf.argmax(prediction, 1, name="predd")
 # Define loss and optimizer
+
 loss_f = -tf.reduce_sum(y * tf.log(prediction))
 optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(loss_f)
 
@@ -91,13 +93,12 @@ correct_pred = tf.equal(tf.argmax(prediction,1), tf.argmax(y,1))
 accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
 
 # Initializing the variables
-init = tf.initialize_all_variables()
 
 #train function
 def train_model(output='model/big/model_big.ckt'):
 
     with tf.Session() as session:
-        session.run(init)
+        session.run(tf.global_variables_initializer())
         
         for itr in range(training_iters):    
             offset = (itr * batch_size) % (tr_labels.shape[0] - batch_size)
@@ -107,13 +108,14 @@ def train_model(output='model/big/model_big.ckt'):
                 
             if itr % display_step == 0:
                 # Calculate batch accuracy
+
                 acc = session.run(accuracy, feed_dict={x: batch_x, y: batch_y})
                 # Calculate batch loss
                 loss = session.run(loss_f, feed_dict={x: batch_x, y: batch_y})
                 print ("Iter " + str(itr) + ", Minibatch Loss= " + \
                       "{:.6f}".format(loss) + ", Training Accuracy= " + \
                       "{:.5f}".format(acc))
-        
+        tf.argmax(prediction, 1, name="predd")
         print('Test accuracy: ',round(session.run(accuracy, feed_dict={x: tr_features, y: tr_labels}) , 3))
         saver = tf.train.Saver()
         saver.save(session, output)

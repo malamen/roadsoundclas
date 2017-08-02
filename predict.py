@@ -31,7 +31,9 @@ def RNN(x, weight, bias):
     last = tf.gather(output, int(output.get_shape()[0]) - 1)
     return tf.nn.softmax(tf.matmul(last, weight) + bias)
 
-prediction = RNN(x, weight, bias)    
+prediction = RNN(x, weight, bias)
+
+tf.argmax(prediction, 1, name="predd")    
 
 # Initializing the variables
 init = tf.global_variables_initializer()
@@ -61,10 +63,12 @@ def extract_features_test(input_test ,bands = n_input, frames = n_steps):
     return np.array(features)
 
 # Predict Function
-def predict(sample_path="trainset/blacktop/blacktop-0-.flac", model_path="./model/small/model_small.ckt.meta"):
+def predict(sample_path="trainset/cobblestone/cobblestone-1-.flac", model_path="./model/small/model_small.ckt.meta"):
 
 	saver = tf.train.import_meta_graph(model_path)
+	graph = tf.get_default_graph()
 	ts_features = extract_features_test(sample_path)
+	preddd = graph.get_tensor_by_name('predd:0')
 
 	type0 = []
 	type1 = []
@@ -72,13 +76,13 @@ def predict(sample_path="trainset/blacktop/blacktop-0-.flac", model_path="./mode
 	with tf.Session() as sess:
 	    # Initialize variables
 	    sess.run(init)
-	    
+	    #saver.restore(sess, 'model/small/model_small.ckpt.data-00000-of-00001')
 	    # Restore model weights from previously saved model
 	    offset = 0
 	    while offset<len(ts_features):
 	    	batch_x = ts_features[offset:(offset + batch_size), :, :]
 	    	feed_dict = {x: batch_x}
-	    	classification = sess.run(tf.argmax(prediction,1),feed_dict)
+	    	classification = sess.run(preddd,feed_dict)
 	    	tmp1 = 0.
 	    	for ii in classification:
 	    		if ii == 1:
