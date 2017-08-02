@@ -63,7 +63,7 @@ def extract_features_test(input_test ,bands = n_input, frames = n_steps):
     return np.array(features)
 
 # Predict Function
-def predict(sample_path="trainset/cobblestone/cobblestone-1-.flac", model_path="./model/small/model_small.ckt.meta"):
+def predict(sample_path="trainset/cobblestone/cobblestone-1-.flac", model_path="./model/big/model_big.ckt.meta"):
 
 	saver = tf.train.import_meta_graph(model_path)
 	graph = tf.get_default_graph()
